@@ -32,14 +32,15 @@
             this.label2 = new System.Windows.Forms.Label();
             this.label3 = new System.Windows.Forms.Label();
             this.label4 = new System.Windows.Forms.Label();
-            this.label5 = new System.Windows.Forms.Label();
             this.lblcurrenthp = new System.Windows.Forms.Label();
             this.lblcurrentmp = new System.Windows.Forms.Label();
+            this.lblcurrentstamina = new System.Windows.Forms.Label();
             this.lblgold = new System.Windows.Forms.Label();
-            this.lbllevel = new System.Windows.Forms.Label();
-            this.lblexperience = new System.Windows.Forms.Label();
             this.lblmaxhp = new System.Windows.Forms.Label();
             this.lblmaxmp = new System.Windows.Forms.Label();
+            this.label5 = new System.Windows.Forms.Label();
+            this.lblpotential = new System.Windows.Forms.Label();
+            this.lblmaxstamina = new System.Windows.Forms.Label();
             this.SuspendLayout();
             // 
             // label1
@@ -66,27 +67,19 @@
             this.label3.AutoSize = true;
             this.label3.Location = new System.Drawing.Point(13, 47);
             this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(29, 13);
+            this.label3.Size = new System.Drawing.Size(45, 13);
             this.label3.TabIndex = 2;
-            this.label3.Text = "Gold";
+            this.label3.Text = "Stamina";
             // 
             // label4
             // 
             this.label4.AutoSize = true;
             this.label4.Location = new System.Drawing.Point(13, 64);
             this.label4.Name = "label4";
-            this.label4.Size = new System.Drawing.Size(33, 13);
+            this.label4.Size = new System.Drawing.Size(29, 13);
             this.label4.TabIndex = 3;
-            this.label4.Text = "Level";
-            // 
-            // label5
-            // 
-            this.label5.AutoSize = true;
-            this.label5.Location = new System.Drawing.Point(13, 81);
-            this.label5.Name = "label5";
-            this.label5.Size = new System.Drawing.Size(60, 13);
-            this.label5.TabIndex = 4;
-            this.label5.Text = "Experience";
+            this.label4.Text = "Gold";
+            this.label4.Click += new System.EventHandler(this.label4_Click);
             // 
             // lblcurrenthp
             // 
@@ -104,29 +97,21 @@
             this.lblcurrentmp.Size = new System.Drawing.Size(0, 13);
             this.lblcurrentmp.TabIndex = 6;
             // 
+            // lblcurrentstamina
+            // 
+            this.lblcurrentstamina.AutoSize = true;
+            this.lblcurrentstamina.Location = new System.Drawing.Point(79, 47);
+            this.lblcurrentstamina.Name = "lblcurrentstamina";
+            this.lblcurrentstamina.Size = new System.Drawing.Size(0, 13);
+            this.lblcurrentstamina.TabIndex = 7;
+            // 
             // lblgold
             // 
             this.lblgold.AutoSize = true;
-            this.lblgold.Location = new System.Drawing.Point(79, 47);
+            this.lblgold.Location = new System.Drawing.Point(79, 64);
             this.lblgold.Name = "lblgold";
             this.lblgold.Size = new System.Drawing.Size(0, 13);
-            this.lblgold.TabIndex = 7;
-            // 
-            // lbllevel
-            // 
-            this.lbllevel.AutoSize = true;
-            this.lbllevel.Location = new System.Drawing.Point(79, 64);
-            this.lbllevel.Name = "lbllevel";
-            this.lbllevel.Size = new System.Drawing.Size(0, 13);
-            this.lbllevel.TabIndex = 8;
-            // 
-            // lblexperience
-            // 
-            this.lblexperience.AutoSize = true;
-            this.lblexperience.Location = new System.Drawing.Point(79, 81);
-            this.lblexperience.Name = "lblexperience";
-            this.lblexperience.Size = new System.Drawing.Size(0, 13);
-            this.lblexperience.TabIndex = 9;
+            this.lblgold.TabIndex = 8;
             // 
             // lblmaxhp
             // 
@@ -144,25 +129,52 @@
             this.lblmaxmp.Size = new System.Drawing.Size(0, 13);
             this.lblmaxmp.TabIndex = 11;
             // 
+            // label5
+            // 
+            this.label5.AutoSize = true;
+            this.label5.Location = new System.Drawing.Point(13, 81);
+            this.label5.Name = "label5";
+            this.label5.Size = new System.Drawing.Size(48, 13);
+            this.label5.TabIndex = 12;
+            this.label5.Text = "Potential";
+            // 
+            // lblpotential
+            // 
+            this.lblpotential.AutoSize = true;
+            this.lblpotential.Location = new System.Drawing.Point(79, 81);
+            this.lblpotential.Name = "lblpotential";
+            this.lblpotential.Size = new System.Drawing.Size(0, 13);
+            this.lblpotential.TabIndex = 13;
+            // 
+            // lblmaxstamina
+            // 
+            this.lblmaxstamina.AutoSize = true;
+            this.lblmaxstamina.Location = new System.Drawing.Point(120, 47);
+            this.lblmaxstamina.Name = "lblmaxstamina";
+            this.lblmaxstamina.Size = new System.Drawing.Size(0, 13);
+            this.lblmaxstamina.TabIndex = 14;
+            // 
             // Game
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(784, 561);
+            this.Controls.Add(this.lblmaxstamina);
+            this.Controls.Add(this.lblpotential);
+            this.Controls.Add(this.label5);
             this.Controls.Add(this.lblmaxmp);
             this.Controls.Add(this.lblmaxhp);
-            this.Controls.Add(this.lblexperience);
-            this.Controls.Add(this.lbllevel);
             this.Controls.Add(this.lblgold);
+            this.Controls.Add(this.lblcurrentstamina);
             this.Controls.Add(this.lblcurrentmp);
             this.Controls.Add(this.lblcurrenthp);
-            this.Controls.Add(this.label5);
             this.Controls.Add(this.label4);
             this.Controls.Add(this.label3);
             this.Controls.Add(this.label2);
             this.Controls.Add(this.label1);
             this.Name = "Game";
             this.Text = "game";
+            this.Load += new System.EventHandler(this.Game_Load);
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -174,14 +186,15 @@
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.Label label3;
         private System.Windows.Forms.Label label4;
-        private System.Windows.Forms.Label label5;
         private System.Windows.Forms.Label lblcurrenthp;
         private System.Windows.Forms.Label lblcurrentmp;
+        private System.Windows.Forms.Label lblcurrentstamina;
         private System.Windows.Forms.Label lblgold;
-        private System.Windows.Forms.Label lbllevel;
-        private System.Windows.Forms.Label lblexperience;
         private System.Windows.Forms.Label lblmaxhp;
         private System.Windows.Forms.Label lblmaxmp;
+        private System.Windows.Forms.Label label5;
+        private System.Windows.Forms.Label lblpotential;
+        private System.Windows.Forms.Label lblmaxstamina;
     }
 }
 
