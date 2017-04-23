@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using Engine;
 
 namespace game
 {
@@ -16,7 +17,9 @@ namespace game
         {
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-            Application.Run(new MyFirstSucsess());
+            Game001 game001 = new Game001();
+            game001.Show();
+            Application.Run();
         }
     }
 }

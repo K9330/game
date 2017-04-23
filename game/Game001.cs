@@ -12,12 +12,12 @@ using Engine;
 
 namespace game
 {
-    public partial class MyFirstSucsess : Form
+    public partial class Game001 : Form
     {
         private Player _player;
         private Enemy _currentMonster;
 
-        public MyFirstSucsess()
+        public Game001()
         {
             InitializeComponent();
 

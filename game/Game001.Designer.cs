@@ -1,6 +1,6 @@
 ﻿namespace game
 {
-    partial class MyFirstSucsess
+    partial class Game001
     {
         /// <summary>
         /// Required designer variable.
