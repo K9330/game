@@ -90,7 +90,7 @@ namespace Engine
                     "Clear the alchemist's garden",
                     "Kill rats in the alchemist's garden and bring back 3 rat tails.", 20, 10);
 
-            clearAlchemistGarden.QuestCompletionItems.Add(new QCompletionI(ItemByID(I_ID_RAT_TAIL), 3));
+            clearAlchemistGarden.QCompletionI.Add(new QCompletionI(ItemByID(I_ID_RAT_TAIL), 3));
 
             clearAlchemistGarden.RewardItem = ItemByID(I_ID_HEALTH_POTION);
 
@@ -100,7 +100,7 @@ namespace Engine
                     "Clear the farmer's field",
                     "Kill snakes in the farmer's field and bring back 3 snake fangs.", 20, 20);
 
-            clearFarmersField.QuestCompletionItems.Add(new QCompletionI(ItemByID(I_ID_SNAKE_FANG), 3));
+            clearFarmersField.QCompletionI.Add(new QCompletionI(ItemByID(I_ID_SNAKE_FANG), 3));
 
             clearFarmersField.RewardItem = ItemByID(I_ID_ADVENTURER_PASS);
 
@@ -119,20 +119,20 @@ namespace Engine
             alchemistHut.QAvailableHere = QuestByID(Q_ID_CLEAR_ALCHEMIST_GARDEN);
 
             Location alchemistsGarden = new Location(L_ID_ALCHEMISTS_GARDEN, "Alchemist's garden", "Kind a creepy.");
-            alchemistsGarden.EnemysExistence = MonsterByID(E_ID_RAT);
+            alchemistsGarden.EnemysExistence = EnemyByID(E_ID_RAT);
 
             Location farmhouse = new Location(L_ID_FARMHOUSE, "Farmhouse", "There is a farmhouse.");
             farmhouse.QAvailableHere = QuestByID(Q_ID_CLEAR_FARMERS_FIELD);
 
             Location farmersField = new Location(L_ID_FARM_FIELD, "Farmer's field", "Huge field.");
-            farmersField.EnemysExistence = MonsterByID(E_ID_SNAKE);
+            farmersField.EnemysExistence = EnemyByID(E_ID_SNAKE);
 
             Location guardPost = new Location(L_ID_GUARD_POST, "Guard post", "There is a large, guard here.", ItemByID(I_ID_ADVENTURER_PASS));
 
             Location bridge = new Location(L_ID_BRIDGE, "Bridge", "A stone bridge crosses a wide river.");
 
             Location spiderField = new Location(L_ID_SPIDER_NEST, "Forest", "You see spider webs covering most of the trees in this forest.");
-            spiderField.EnemysExistence = MonsterByID(E_ID_GIANT_SPIDER);
+            spiderField.EnemysExistence = EnemyByID(E_ID_GIANT_SPIDER);
 
             // Link the locations together
             home.LocationToNorth = townSquare;
@@ -185,7 +185,7 @@ namespace Engine
             return null;
         }
 
-        public static Enemy MonsterByID(int id)
+        public static Enemy EnemyByID(int id)
         {
             foreach (Enemy monster in Enemys)
             {

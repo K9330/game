@@ -279,7 +279,7 @@
             this.dgvQuests.Size = new System.Drawing.Size(320, 200);
             this.dgvQuests.TabIndex = 24;
             // 
-            // MyFirstSucsess
+            // Game001
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
@@ -308,8 +308,9 @@
             this.Controls.Add(this.lblLevel);
             this.Controls.Add(this.label2);
             this.Controls.Add(this.label1);
-            this.Name = "MyFirstSucsess";
+            this.Name = "Game001";
             this.Text = "Game001";
+            this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.Game001_FormClosing);
             ((System.ComponentModel.ISupportInitialize)(this.dgvInventory)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.dgvQuests)).EndInit();
             this.ResumeLayout(false);

@@ -6,7 +6,8 @@ using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using System.Windows.Forms;
+using System.Windows.Forms;	
+using System.IO;
 
 using Engine;
 
@@ -15,22 +16,29 @@ namespace game
     public partial class Game001 : Form
     {
         private Player _player;
-        private Enemy _currentMonster;
-
+        private Enemy _currentE;
+        private const string PLAYER_DATA_FILE_NAME = "PlayerData.xml";
         public Game001()
         {
             InitializeComponent();
 
-            _player = new Player(10, 10, 20, 0, 1);
-            MoveTo(AllStuff.LocationByID(AllStuff.L_ID_HOME));
-            _player.Inventory.Add(new InventoryI(AllStuff.ItemByID(AllStuff.I_ID_RUSTED_SWORD), 1));
+            if (File.Exists(PLAYER_DATA_FILE_NAME))
+            {
+                _player = Player.CreatePlayerFromXmlString(File.ReadAllText(PLAYER_DATA_FILE_NAME));
+            }
+            else
+            {
+                _player = Player.CreateDefaultPlayer();
+            }
 
-            lblHitPoints.Text = _player.CurrentHP.ToString();
-            lblGold.Text = _player.Gold.ToString();
-            lblExperience.Text = _player.ExperiencePoints.ToString();
-            lblLevel.Text = _player.Level.ToString();
+            MoveTo(_player.CurrentLocation);
+
+            UpdatePlayerStats();
         }
-
+        private void cboWeapons_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            _player.CurrentWeapon = (Weapon)cboWeapons.SelectedItem;
+        }
         private void btnNorth_Click(object sender, EventArgs e)
         {
             MoveTo(_player.CurrentLocation.LocationToNorth);
@@ -51,6 +59,15 @@ namespace game
             MoveTo(_player.CurrentLocation.LocationToWest);
         }
 
+        private void UpdatePlayerStats()
+        {
+            // Refresh player information and inventory controls
+            lblHitPoints.Text = _player.CurrentHP.ToString();
+            lblGold.Text = _player.Gold.ToString();
+            lblExperience.Text = _player.ExperiencePoints.ToString();
+            lblLevel.Text = _player.Level.ToString();
+        }
+
         private void MoveTo(Location newLocation)
         {
             //Does the location have any required items
@@ -60,16 +77,16 @@ namespace game
                 return;
             }
 
-            // Update the player's current location
+            
             _player.CurrentLocation = newLocation;
 
-            // Show/hide available movement buttons
+            
             btnNorth.Visible = (newLocation.LocationToNorth != null);
             btnEast.Visible = (newLocation.LocationToEast != null);
             btnSouth.Visible = (newLocation.LocationToSouth != null);
             btnWest.Visible = (newLocation.LocationToWest != null);
 
-            // Display current location name and description
+            
             rtbLocation.Text = newLocation.Name + Environment.NewLine;
             rtbLocation.Text += newLocation.Description + Environment.NewLine;
 
@@ -79,31 +96,31 @@ namespace game
             // Update Hit Points in UI
             lblHitPoints.Text = _player.CurrentHP.ToString();
 
-            // Does the location have a quest?
+
+            
             if (newLocation.QAvailableHere != null)
             {
                 // See if the player already has the quest, and if they've completed it
-                bool playerAlreadyHasQuest = _player.HasThisQuest(newLocation.QAvailableHere);
+                bool pAlreadyHasQ = _player.HasThisQuest(newLocation.QAvailableHere);
                 bool playerAlreadyCompletedQuest = _player.CompletedThisQuest(newLocation.QAvailableHere);
 
-                // See if the player already has the quest
-                if (playerAlreadyHasQuest)
+                
+                if (pAlreadyHasQ)
                 {
-                    // If the player has not completed the quest yet
+                    
                     if (!playerAlreadyCompletedQuest)
                     {
-                        // See if the player has all the items needed to complete the quest
-                        bool playerHasAllItemsToCompleteQuest = _player.HasAllQuestCompletionItems(newLocation.QAvailableHere);
-
-                        // The player has all items required to complete the quest
-                        if (playerHasAllItemsToCompleteQuest)
+                        
+                        bool playerHasAllIToCompleteQ = _player.HasAllQCompletionI(newLocation.QAvailableHere);
+                        
+                        if (playerHasAllIToCompleteQ)
                         {
-                            // Display message
+                           
                             rtbMessages.Text += Environment.NewLine;
                             rtbMessages.Text += "You complete the '" + newLocation.QAvailableHere.Name + "' quest." + Environment.NewLine;
 
-                            // Remove quest items from inventory
-                            _player.RemoveQuestCompletionItems(newLocation.QAvailableHere);
+                            
+                            _player.RemoveQCompletionI(newLocation.QAvailableHere);
 
                             // Give quest rewards
                             rtbMessages.Text += "You receive: " + Environment.NewLine;
@@ -112,26 +129,25 @@ namespace game
                             rtbMessages.Text += newLocation.QAvailableHere.RewardItem.Name + Environment.NewLine;
                             rtbMessages.Text += Environment.NewLine;
 
-                            _player.ExperiencePoints += newLocation.QAvailableHere.RewardExperiencePoints;
+                            _player.AddExperiencePoints(newLocation.QAvailableHere.RewardExperiencePoints);
                             _player.Gold += newLocation.QAvailableHere.RewardGold;
 
-                            // Add the reward item to the player's inventory
-                            _player.AddItemToInventory(newLocation.QAvailableHere.RewardItem);
+                            // Add the reward inventory
+                            _player.AddIToInventory(newLocation.QAvailableHere.RewardItem);
 
                             // Mark the quest as completed
-                            _player.MarkQuestCompleted(newLocation.QAvailableHere);
+                            _player.MarkQCompleted(newLocation.QAvailableHere);
                         }
                     }
                 }
                 else
                 {
-                    // The player does not already have the quest
-
-                    // Display the messages
+                    
+                    
                     rtbMessages.Text += "You receive the " + newLocation.QAvailableHere.Name + " quest." + Environment.NewLine;
                     rtbMessages.Text += newLocation.QAvailableHere.Description + Environment.NewLine;
                     rtbMessages.Text += "To complete it, return with:" + Environment.NewLine;
-                    foreach (QCompletionI qci in newLocation.QAvailableHere.QuestCompletionItems)
+                    foreach (QCompletionI qci in newLocation.QAvailableHere.QCompletionI)
                     {
                         if (qci.Quantity == 1)
                         {
@@ -149,20 +165,20 @@ namespace game
                 }
             }
 
-            // Does the location have a monster?
+            
             if (newLocation.EnemysExistence != null)
             {
                 rtbMessages.Text += "You see a " + newLocation.EnemysExistence.Name + Environment.NewLine;
 
-                // Make a new monster, using the values from the standard monster in the World.Monster list
-                Enemy standardMonster = AllStuff.MonsterByID(newLocation.EnemysExistence.ID);
+                // Make a new enemy
+                Enemy standardE = AllStuff.EnemyByID(newLocation.EnemysExistence.ID);
 
-                _currentMonster = new Enemy(standardMonster.ID, standardMonster.Name, standardMonster.MaximumDamage,
-                    standardMonster.RewardExperiencePoints, standardMonster.GoldReward, standardMonster.CurrentHP, standardMonster.MaxHP);
+                _currentE = new Enemy(standardE.ID, standardE.Name, standardE.MaximumDamage,
+                    standardE.RewardExperiencePoints, standardE.GoldReward, standardE.CurrentHP, standardE.MaxHP);
 
-                foreach (LootI lootItem in standardMonster.LootTable)
+                foreach (LootI lootI in standardE.LootTable)
                 {
-                    _currentMonster.LootTable.Add(lootItem);
+                    _currentE.LootTable.Add(lootI);
                 }
 
                 cboWeapons.Visible = true;
@@ -172,7 +188,7 @@ namespace game
             }
             else
             {
-                _currentMonster = null;
+                _currentE = null;
 
                 cboWeapons.Visible = false;
                 cboPotions.Visible = false;
@@ -243,6 +259,31 @@ namespace game
                         weapons.Add((Weapon)inventoryItem.Details);
                     }
                 }
+
+                if (weapons.Count == 0)
+                {
+                    // The player doesn't have any weapons, so hide the weapon combobox and "Use" button
+                    cboWeapons.Visible = false;
+                    btnUseWeapon.Visible = false;
+                }
+                else
+                {
+                    cboWeapons.SelectedIndexChanged -= cboWeapons_SelectedIndexChanged;
+                    cboWeapons.DataSource = weapons;
+                    cboWeapons.SelectedIndexChanged += cboWeapons_SelectedIndexChanged;
+                    cboWeapons.DisplayMember = "Name";
+                    cboWeapons.ValueMember = "ID";
+
+                    if (_player.CurrentWeapon != null)
+                    {
+                        cboWeapons.SelectedItem = _player.CurrentWeapon;
+                    }
+                    else
+                    {
+                        cboWeapons.SelectedIndex = 0;
+                    }
+                }
+
             }
 
             if (weapons.Count == 0)
@@ -298,34 +339,34 @@ namespace game
             Weapon currentWeapon = (Weapon)cboWeapons.SelectedItem;
 
             // Determine the amount of damage to do to the monster
-            int damageToMonster = RandomNumberGenerator.NumberBetween(currentWeapon.MinimumDamage, currentWeapon.MaximumDamage);
+            int damageToE = RandomNumberGenerator.NumberBetween(currentWeapon.MinimumDamage, currentWeapon.MaximumDamage);
 
             // Apply the damage to the monster's CurrentHitPoints
-            _currentMonster.CurrentHP -= damageToMonster;
+            _currentE.CurrentHP -= damageToE;
 
             // Display message
-            rtbMessages.Text += "You hit the " + _currentMonster.Name + " for " + damageToMonster.ToString() + " points." + Environment.NewLine;
+            rtbMessages.Text += "You hit the " + _currentE.Name + " for " + damageToE.ToString() + " points." + Environment.NewLine;
 
             // Check if the monster is dead
-            if (_currentMonster.CurrentHP <= 0)
+            if (_currentE.CurrentHP <= 0)
             {
-                // Monster is dead
+                
                 rtbMessages.Text += Environment.NewLine;
-                rtbMessages.Text += "You defeated the " + _currentMonster.Name + Environment.NewLine;
+                rtbMessages.Text += "You defeated the " + _currentE.Name + Environment.NewLine;
 
-                // Give player experience points for killing the monster
-                _player.ExperiencePoints += _currentMonster.RewardExperiencePoints;
-                rtbMessages.Text += "You receive " + _currentMonster.RewardExperiencePoints.ToString() + " experience points" + Environment.NewLine;
+                // Give player experience points for killing
+                _player.AddExperiencePoints(_currentE.RewardExperiencePoints);
+                rtbMessages.Text += "You receive " + _currentE.RewardExperiencePoints.ToString() + " experience points" + Environment.NewLine;
 
-                // Give player gold for killing the monster 
-                _player.Gold += _currentMonster.GoldReward;
-                rtbMessages.Text += "You receive " + _currentMonster.GoldReward.ToString() + " gold" + Environment.NewLine;
+                // Give player gold for killing 
+                _player.Gold += _currentE.GoldReward;
+                rtbMessages.Text += "You receive " + _currentE.GoldReward.ToString() + " gold" + Environment.NewLine;
 
-                // Get random loot items from the monster
+                // Get random loot items from the enemy
                 List<InventoryI> lootedItems = new List<InventoryI>();
 
                 // Add items to the lootedItems list, comparing a random number to the drop percentage
-                foreach (LootI lootItem in _currentMonster.LootTable)
+                foreach (LootI lootItem in _currentE.LootTable)
                 {
                     if (RandomNumberGenerator.NumberBetween(1, 100) <= lootItem.ItemDropPercentage)
                     {
@@ -336,7 +377,7 @@ namespace game
                 // If no items were randomly selected, then add the default loot item(s).
                 if (lootedItems.Count == 0)
                 {
-                    foreach (LootI lootItem in _currentMonster.LootTable)
+                    foreach (LootI lootItem in _currentE.LootTable)
                     {
                         if (lootItem.IsDefaultItem)
                         {
@@ -346,17 +387,17 @@ namespace game
                 }
 
                 // Add the looted items to the player's inventory
-                foreach (InventoryI inventoryItem in lootedItems)
+                foreach (InventoryI inventoryI in lootedItems)
                 {
-                    _player.AddItemToInventory(inventoryItem.Details);
+                    _player.AddIToInventory(inventoryI.Details);
 
-                    if (inventoryItem.Quantity == 1)
+                    if (inventoryI.Quantity == 1)
                     {
-                        rtbMessages.Text += "You loot " + inventoryItem.Quantity.ToString() + " " + inventoryItem.Details.Name + Environment.NewLine;
+                        rtbMessages.Text += "You loot " + inventoryI.Quantity.ToString() + " " + inventoryI.Details.Name + Environment.NewLine;
                     }
                     else
                     {
-                        rtbMessages.Text += "You loot " + inventoryItem.Quantity.ToString() + " " + inventoryItem.Details.NamePlural + Environment.NewLine;
+                        rtbMessages.Text += "You loot " + inventoryI.Quantity.ToString() + " " + inventoryI.Details.NamePlural + Environment.NewLine;
                     }
                 }
 
@@ -379,12 +420,10 @@ namespace game
             else
             {
                 // Monster is still alive
-
-                // Determine the amount of damage the monster does to the player
-                int damageToPlayer = RandomNumberGenerator.NumberBetween(0, _currentMonster.MaximumDamage);
-
-                // Display message
-                rtbMessages.Text += "The " + _currentMonster.Name + " did " + damageToPlayer.ToString() + " points of damage." + Environment.NewLine;
+                                
+                int damageToPlayer = RandomNumberGenerator.NumberBetween(0, _currentE.MaximumDamage);
+                
+                rtbMessages.Text += "The " + _currentE.Name + " did " + damageToPlayer.ToString() + " points of damage." + Environment.NewLine;
 
                 // Subtract damage from player
                 _player.CurrentHP -= damageToPlayer;
@@ -395,12 +434,18 @@ namespace game
                 if (_player.CurrentHP <= 0)
                 {
                     // Display message
-                    rtbMessages.Text += "The " + _currentMonster.Name + " killed you." + Environment.NewLine;
+                    rtbMessages.Text += "The " + _currentE.Name + " killed you." + Environment.NewLine;
 
                     // Move player to "Home"
                     MoveTo(AllStuff.LocationByID(AllStuff.L_ID_HOME));
                 }
             }
+        }
+
+        private void ScrollToBottomOfMessages()
+        {
+            rtbMessages.SelectionStart = rtbMessages.Text.Length;
+            rtbMessages.ScrollToCaret();
         }
 
         private void btnUsePotion_Click(object sender, EventArgs e)
@@ -433,10 +478,10 @@ namespace game
             // Monster gets their turn to attack
 
             // Determine the amount of damage the monster does to the player
-            int damageToPlayer = RandomNumberGenerator.NumberBetween(0, _currentMonster.MaximumDamage);
+            int damageToPlayer = RandomNumberGenerator.NumberBetween(0, _currentE.MaximumDamage);
 
             // Display message
-            rtbMessages.Text += "The " + _currentMonster.Name + " did " + damageToPlayer.ToString() + " points of damage." + Environment.NewLine;
+            rtbMessages.Text += "The " + _currentE.Name + " did " + damageToPlayer.ToString() + " points of damage." + Environment.NewLine;
 
             // Subtract damage from player
             _player.CurrentHP -= damageToPlayer;
@@ -444,7 +489,7 @@ namespace game
             if (_player.CurrentHP <= 0)
             {
                 // Display message
-                rtbMessages.Text += "The " + _currentMonster.Name + " killed you." + Environment.NewLine;
+                rtbMessages.Text += "The " + _currentE.Name + " killed you." + Environment.NewLine;
 
                 // Move player to "Home"
                 MoveTo(AllStuff.LocationByID(AllStuff.L_ID_HOME));
@@ -454,6 +499,11 @@ namespace game
             lblHitPoints.Text = _player.CurrentHP.ToString();
             UpdateInventoryListInUI();
             UpdatePotionListInUI();
+        }
+
+        private void Game001_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            File.WriteAllText(PLAYER_DATA_FILE_NAME, _player.ToXmlString());
         }
     }
 }
