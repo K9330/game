@@ -32,7 +32,7 @@ namespace Engine
         public static Player CreateDefaultPlayer()
         {
             Player player = new Player(10, 10, 20, 0);
-            player.Inventory.Add(new InventoryI(AllStuff.ItemByID(AllStuff.I_ID_RUSTED_SWORD), 1));
+            player.Inventory.Add(new InventoryI(AllStuff.ItemByID(AllStuff.I_ID_SWORD), 1));
             player.CurrentLocation = AllStuff.LocationByID(AllStuff.L_ID_HOME);
 
             return player;
