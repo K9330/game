@@ -10,11 +10,15 @@ namespace Engine
     {
         public int MinimumDamage { get; set; }
         public int MaximumDamage { get; set; }
+        public int WeaponType { get; set; }
+        public List<Attack> AttackList { get; set; }
 
-        public Weapon(int id, string name, string namePlural, int minimumDamage, int maximumDamage) : base(id, name, namePlural)
+        public Weapon(int id, string name, string namePlural, int minimumDamage, int maximumDamage, int weaponType) : base(id, name, namePlural)
         {
             MinimumDamage = minimumDamage;
             MaximumDamage = maximumDamage;
+            WeaponType = weaponType;
+            AttackList = new List<Attack>();
         }
     }
 }

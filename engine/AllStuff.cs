@@ -12,6 +12,8 @@ namespace Engine
         public static readonly List<Enemy> Enemys = new List<Enemy>();
         public static readonly List<Quest> Quests = new List<Quest>();
         public static readonly List<Location> Locations = new List<Location>();
+        public static readonly List<Attack> Attacks = new List<Attack>();
+
 
         public const int I_ID_SWORD = 1;
         public const int I_ID_MACE = 2;
@@ -23,11 +25,14 @@ namespace Engine
         public const int I_ID_SPIDER_BODY = 8;
         public const int I_ID_HEALTH_POTION = 9;
         public const int I_ID_ADVENTURER_PASS = 10;
-        public const int I_ID_RAT_SUBJECTION_PROOF = 10;
-        public const int I_ID_SNAKE_SUBJECTION_PROOF = 10;
-        public const int I_ID_SPIDER_SUBJECTION_PROOF = 10;
-        public const int I_ID_THIEF_SUBJECTION_PROOF = 10;
-        public const int I_ID_BANDIT_SUBJECTION_PROOF = 10;
+        public const int I_ID_RAT_SUBJECTION_PROOF = 11;
+        public const int I_ID_SNAKE_SUBJECTION_PROOF = 12;
+        public const int I_ID_SPIDER_SUBJECTION_PROOF = 13;
+        public const int I_ID_THIEF_SUBJECTION_PROOF = 14;
+        public const int I_ID_BANDIT_SUBJECTION_PROOF = 15;
+        public const int I_WD_MACE = 1;
+        public const int I_WD_SWORD = 2;
+        public const int I_WD_SPEAR = 3;
 
         public const int E_ID_RAT = 1;
         public const int E_ID_SNAKE = 2;
@@ -58,6 +63,14 @@ namespace Engine
         public const int L_ID_TRAINING_FACILITY = 18;
         public const int L_ID_FOOD_STORE = 19;
 
+        public const int A_ID_STAB = 1;
+        public const int A_ID_SLASH = 2;
+        public const int A_ID_HIT = 3;
+        public const int A_ID_CRUSH = 4;
+        public const int A_ID_SHOOT = 5;
+
+
+
         static AllStuff()
         {
             PopulateItems();
@@ -68,13 +81,13 @@ namespace Engine
 
         private static void PopulateItems()
         {
-            Items.Add(new Weapon(I_ID_SWORD, "Sword", "Swords", 1, 25));
+            Items.Add(new Weapon(I_ID_SWORD, "Sword", "Swords", 1, 25, I_WD_SWORD));
+            Items.Add(new Weapon(I_ID_MACE, "Mace", "Mace", 5, 20, I_WD_MACE));
             Items.Add(new Item(I_ID_RAT_BODY, "Rat tail", "Rat tails"));
             Items.Add(new Item(I_ID_PIECE_OF_FUR, "Piece of fur", "Pieces of fur"));
             Items.Add(new Item(I_ID_SNAKE_BODY, "Snake fang", "Snake fangs"));
             Items.Add(new Item(I_ID_SNAKESKIN, "Snakeskin", "Snakeskins"));
-            Items.Add(new Weapon(I_ID_MACE, "Mace", "Mace", 5, 20));
-            Items.Add(new HealthPotion(I_ID_HEALTH_POTION, "Health potion", "Healing potions", 5));
+            Items.Add(new HealthPotion(I_ID_HEALTH_POTION, "Health potion", "Healing potions", 50));
             Items.Add(new Item(I_ID_SPIDER_BODY, "Spider fang", "Spider fangs"));
             Items.Add(new Item(I_ID_SPIDER_SILK, "Spider silk", "Spider silks"));
             Items.Add(new Item(I_ID_ADVENTURER_PASS, "Adventurer pass", "Adventurer passes"));
@@ -87,30 +100,32 @@ namespace Engine
 
         private static void PopulateEnemys()
         {
-            Enemy rat = new Enemy(E_ID_RAT, "Rat", 7, 2, 10, 30, 30);
+            Enemy rat = new Enemy(E_ID_RAT, "Rat", 7, 2, 10, 30, 30, 0, 0, 0, 15, 50, 50, 25, 0, 0);
             rat.LootTable.Add(new LootI(ItemByID(I_ID_RAT_BODY), 100, true));
             rat.LootTable.Add(new LootI(ItemByID(I_ID_PIECE_OF_FUR), 50, false));
             rat.LootTable.Add(new LootI(ItemByID(I_ID_RAT_SUBJECTION_PROOF), 100, true));
 
-            Enemy snake = new Enemy(E_ID_SNAKE, "Snake", 15, 5, 10, 50, 50);
+            Enemy snake = new Enemy(E_ID_SNAKE, "Snake", 15, 5, 10, 50, 50, 10, 0 ,0, 50, 40, 50 ,20,0,0);
             snake.LootTable.Add(new LootI(ItemByID(I_ID_SNAKE_BODY), 100, true));
             snake.LootTable.Add(new LootI(ItemByID(I_ID_SNAKESKIN), 50, false));
             snake.LootTable.Add(new LootI(ItemByID(I_ID_SNAKE_SUBJECTION_PROOF), 100, true));
 
-            Enemy giantSpider = new Enemy(E_ID_GIANT_SPIDER, "Giant spider", 20, 10, 20, 100, 100);
+            Enemy giantSpider = new Enemy(E_ID_GIANT_SPIDER, "Giant spider", 20, 10, 20, 100, 100,0,0,0,40,40,60,20,10,10);
             giantSpider.LootTable.Add(new LootI(ItemByID(I_ID_SPIDER_BODY), 100, true));
             giantSpider.LootTable.Add(new LootI(ItemByID(I_ID_SPIDER_SILK), 25, false));
             giantSpider.LootTable.Add(new LootI(ItemByID(I_ID_SPIDER_SUBJECTION_PROOF), 100, true));
 
-            Enemy thife = new Enemy(E_ID_THIFE, "Thife", 40, 50, 100, 250, 250);
+            Enemy thife = new Enemy(E_ID_THIFE, "Thife", 40, 50, 100, 250, 250,20,0,0,50,40,25,25,0,25);
             thife.LootTable.Add(new LootI(ItemByID(I_ID_THIEF_SUBJECTION_PROOF), 100, true));
 
-            Enemy bandit = new Enemy(E_ID_BANDIT, "Bandit", 50, 100, 100, 300, 3000);
+            Enemy bandit = new Enemy(E_ID_BANDIT, "Bandit", 50, 100, 100, 300, 3000,0,20,10,50,50,25,10,50,15);
             bandit.LootTable.Add(new LootI(ItemByID(I_ID_BANDIT_SUBJECTION_PROOF), 100, true));
 
             Enemys.Add(rat);
             Enemys.Add(snake);
             Enemys.Add(giantSpider);
+            Enemys.Add(thife);
+            Enemys.Add(bandit);
         }
 
         private static void PopulateQuests()

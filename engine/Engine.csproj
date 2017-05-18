@@ -41,6 +41,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AllStuff.cs" />
+    <Compile Include="Attack.cs" />
     <Compile Include="Creatures.cs" />
     <Compile Include="HealthPotion.cs" />
     <Compile Include="InventoryI.cs" />

@@ -14,9 +14,10 @@ namespace Engine
         public int RewardExperiencePoints { get; set; }
         public int GoldReward { get; set; }
         public List<LootI> LootTable { get; set; }
+        public List<Attack> AttackList { get; set; }
 
-        public Enemy(int id, string name, int maximumDamage, int rewardExperiencePoints, int goldReward, int currentHitPoints, int maximumHitPoints)
-            : base(currentHitPoints, maximumHitPoints)
+        public Enemy(int id, string name, int maximumDamage, int rewardExperiencePoints, int goldReward, int CurrentHP, int MaxHP, int bluntResPerc, int slashResPerc, int pierceRecPerc, int fireRecPerc, int waterRecPerc, int magicRecPerc, int dodgePerc, int blockPerc, int parryPerc)
+            : base(CurrentHP, MaxHP, bluntResPerc, slashResPerc, pierceRecPerc, fireRecPerc, waterRecPerc, magicRecPerc, dodgePerc, blockPerc, parryPerc)
         {
             ID = id;
             Name = name;
@@ -24,6 +25,7 @@ namespace Engine
             RewardExperiencePoints = rewardExperiencePoints;
             GoldReward = goldReward;
             LootTable = new List<LootI>();
+            AttackList = new List<Attack>();
         }
     }
 }
